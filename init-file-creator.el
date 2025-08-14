@@ -33,20 +33,36 @@
 
 ;;; Code:
 (require 'cus-edit)
-(require 'init-file-creator-packages)
+(require 'init-file-creator-ui)
 
 (defvar init-creator--buffer-name "*Init file Creator*")
 
-;; TODO: A better description about buffer contents.
+(defvar init-creator--description
+  "\n\nWelcome to the Emacs init file creator.
+
+This tool facilitates the creation of a basic Emacs configuration (init file).
+The init file contains instructions Emacs executes upon startup,
+customizing the environment to user specifications.  See Info node
+‘(emacs) Init File’ for more information.
+
+Emacs utilizes Emacs Lisp for configuration.  This tool offers an
+interface to simplify the initial setup process.  It is intended as
+a starting point for customization.
+\n\nGetting Started:
+
+Follow the on-screen instructions to make your selections.
+
+Once you've completed your selections, an init file will be generated
+containing the settings you've chosen.  The file will incorporate
+`use-package` for managing installed packages, which is a common and
+recommended approach in Emacs configuration.  This structure is designed
+to facilitate learning Emacs Lisp and further customization of your
+configuration.\n\n\n")
+
 (defvar init-creator--basic-buffer-info
   (concat
    (propertize "Init Configuration Creator" 'face 'info-title-1)
-   (propertize "\n\nWelcome to Emacs init file creator mode.  \
-This will guide you to create a basic and quick init file.
-
-This mode will let you install and configure popular packages from Package Archives
-and set built-in features or modes.\n\n"
-               'face 'variable-pitch))
+   (propertize init-creator--description 'face 'variable-pitch))
   "String to insert top init creator buffer.")
 
 (defvar-keymap init-file-creator-map
@@ -88,15 +104,15 @@ and set built-in features or modes.\n\n"
    (widget-insert init-creator--basic-buffer-info)
    (widget-create 'editable-field
                   :format "Where to create init file: %v "
+                  :size 50
                   (expand-file-name "~/.config/emacs/init.el"))
    (widget-insert ?\n)
-   (widget-create 'push-button :tag "Create configuration"
-                  :help-echo "Push me when done customizing."
+   (widget-create 'push-button :tag "Create init file"
+                  :help-echo "Push me for create the init file."
                   :action 'init-creator--create-init-file)
    (widget-insert ?\n)
    (custom-group--draw-horizontal-line)
-   (mapc (lambda (fn) (funcall fn)) init-creator--config-widgets)
-   ))
+   (dolist (fn init-creator--config-widgets) (funcall fn))))
 
 (provide 'init-file-creator)
 ;;; init-file-creator.el ends here
