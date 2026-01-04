@@ -1,4 +1,4 @@
-;;; init-file-creator.el --- Create a config with popular packages or common configurations.  -*- lexical-binding: t; -*-
+;;; init-file-creator.el --- Create an optionated config with popular packages or common configurations.  -*- lexical-binding: t; -*-
 
 ;; Copyright (C) 2025 Free Software Foundation, Inc.
 
@@ -30,6 +30,10 @@
 ;; This allows install and configure popular packages from
 ;; GNU and NonGNU ELPA, configure and enable or disable built-in
 ;; features.
+;;
+;; Acknowledge: Thanks to Philip Kaluđerčić for creating
+;; https://emacs.amodernist.com/, which was the inspiration for this
+;; package
 
 ;;; Code:
 (require 'cus-edit)
@@ -37,8 +41,13 @@
 
 (defvar init-creator--buffer-name "*Init file Creator*")
 
-(defvar init-creator--description
-  "\n\nWelcome to the Emacs init file creator.
+(defvar init-creator--basic-buffer-info
+  (concat
+   ;; Title
+   (propertize "Init Configuration Creator" 'face 'info-title-1)
+   ;; Description
+   (propertize
+    "\n\nWelcome to the Emacs init file creator.
 
 This tool facilitates the creation of a basic Emacs configuration (init file).
 The init file contains instructions Emacs executes upon startup,
@@ -48,22 +57,18 @@ customizing the environment to user specifications.  See Info node
 Emacs utilizes Emacs Lisp for configuration.  This tool offers an
 interface to simplify the initial setup process.  It is intended as
 a starting point for customization.
-\n\nGetting Started:
 
-Follow the on-screen instructions to make your selections.
+Getting Started:
+
+Follow the instructions to make your selections.
 
 Once you've completed your selections, an init file will be generated
 containing the settings you've chosen.  The file will incorporate
 `use-package` for managing installed packages, which is a common and
 recommended approach in Emacs configuration.  This structure is designed
-to facilitate learning Emacs Lisp and further customization of your
-configuration.\n\n\n")
-
-(defvar init-creator--basic-buffer-info
-  (concat
-   (propertize "Init Configuration Creator" 'face 'info-title-1)
-   (propertize init-creator--description 'face 'variable-pitch))
-  "String to insert top init creator buffer.")
+to learning basic Emacs Lisp and customization of your
+configuration.\n\n\n" 'face 'variable-pitch))
+  "String to insert at top in init creator buffer.")
 
 (defvar-keymap init-file-creator-map
   :doc "Keymap used in the \"*Init file Creator*\" buffer."
@@ -72,7 +77,7 @@ configuration.\n\n\n")
   "SPC"     #'scroll-up-command
   "S-SPC"   #'scroll-down-command
   "DEL"     #'scroll-down-command
-  ;; "C-x C-s" #'
+  ;; TODO: "C-x C-s" #'
   "q"       #'Custom-buffer-done
   "n"       #'widget-forward
   "p"       #'widget-backward)
